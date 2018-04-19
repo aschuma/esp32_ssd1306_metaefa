@@ -14,7 +14,7 @@ def _is_summer_time(sec_since_2000):
         if interval[0] <= (sec_since_2000 + sec_2000) <= interval[1]:
             return True
 
-    return Faglse
+    return False
 
 
 def current():
