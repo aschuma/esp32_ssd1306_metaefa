@@ -14,7 +14,6 @@ import naya.json
 
 class Departure:
     def __init__(self, json_data, conf):
-        print(json_data)
         departure_time = json_data['departureTime']
         self.delay = json_data['delay']
         self.number = json_data['number']
@@ -33,16 +32,31 @@ class Departure:
 
 def departures():
     departure_list = []
-    for station in config.efa_stations:
-        print(station)
-        limit = station['fetchLimit']
-        request = requests.get(config.efa_departure_rest_endpoint_template.format(station['id']), stream=True)
-        data = io.StringIO(request.text)
-        request.close()
-        items = naya.json.stream_array(naya.json.tokenize(data))
-        departure_list = departure_list + ([
-                                               Departure(item, station)
-                                               for item in items
-                                               if (
-                        item['number'] in station['numbers'] and item['direction'] in station['directions'])][:limit])
+    for station in config.efa_stations: 
+        departure_list = departure_list + departures_for_station(station)
     return departure_list
+
+
+def departures_for_station(station):
+    print("STATION:", station)
+    # get the raw data
+    url = config.efa_departure_rest_endpoint_template.format(station['id'])
+    print(" URL:", url)
+    request = requests.get(url, stream=True)
+    data = io.StringIO(request.text)
+    request.close()    
+    # extract data from json
+    limit = station['fetchLimit']
+    items = naya.json.stream_array(naya.json.tokenize(data))
+    answer = []
+    if limit > 0:
+        for item in items:        
+            if item['number'] in station['numbers']:
+                if item['direction'] in station['directions']:
+                    departure = Departure(item, station)
+                    print(" - ", limit, departure)
+                    answer.append(departure)
+                    limit = limit - 1
+                    if limit <= 0:
+                        return answer                        
+    return answer
