@@ -112,8 +112,14 @@ except:
         record = time.localtime()
         return (record.tm_year,
                 record.tm_mon,
+                record.tm_mday,
                 record.tm_hour,
                 record.tm_min,
                 record.tm_sec,
                 0,
                 record.tm_yday)
+
+
+def current_time_formatted():
+    date_time = current()
+    return '{:02d}:{:02d}'.format(int(date_time[3]), int(date_time[4]))
