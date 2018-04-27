@@ -28,3 +28,25 @@ class Display(ssd1306.SSD1306_I2C):
 
     def fill_triangle(self, x0, y0, x1, y1, x2, y2, *args, **kwargs):
         self.gfx.fill_triangle(x0, y0, x1, y1, x2, y2, *args, **kwargs)
+
+    def center_rect(self, scale, *args, **kwargs):
+        s = float(scale)
+        w = s * self.width
+        h = s * self.height
+        self.rect(int((self.width - w) / 2.0), int((self.height - h) / 2.0), int(w), int(h), *args, **kwargs)
+
+    def center_fill_rect(self, scale, *args, **kwargs):
+        s = float(scale)
+        w = s * self.width
+        h = s * self.height
+        self.fill_rect(int((self.width - w) / 2.0), int((self.height - h) / 2.0), int(w), int(h), *args, **kwargs)
+
+    def center_circle(self, scale, *args, **kwargs):
+        s = float(scale)
+        r = s * self.width / 2.0
+        self.circle(int(self.width / 2.0), int(self.height / 2.0), int(r), *args, **kwargs)
+
+    def center_fill_circle(self, scale, *args, **kwargs):
+        s = float(scale)
+        r = s * self.width / 2.0
+        self.fill_circle(int(self.width / 2.0), int(self.height / 2.0), int(r), *args, **kwargs)

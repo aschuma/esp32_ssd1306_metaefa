@@ -1,3 +1,25 @@
-
 network_name = 'freifunk'
 network_pw = ''
+
+efa_departure_rest_endpoint_template = 'https://efa-api.asw.io/api/v1/station/{}/departures/'
+efa_stations = [
+    {
+        "id": "5006074",
+        "name": "RH",
+        "fetchLimit": 4,
+        "fullName": "Rathhaus",
+        "distance_in_minutes": 4,
+        "numbers": ['U1'],
+        "directions": ['Neugereut', 'Fellbach Lutherkirche']
+    },
+    {
+        "id": "5006056",
+        "name": "SMitte",
+        "fetchLimit": 4,
+        "fullName": "Stadtmitte",
+        "distance_in_minutes": 4,
+        "numbers": ['S1', 'S2', 'S3', 'U1', 'U2'],
+        "directions": ['Backnang', 'Kirchheim (T)', 'Plochingen', 'Esslingen (N)', 'Schorndorf', 'Neckarpark',
+                       'NeckarPark (Stadion)', 'Bad Cannstatt', 'Bad Cannstatt Wilhelmsplatz', 'Neugereut', 'Fellbach']
+    }
+]
