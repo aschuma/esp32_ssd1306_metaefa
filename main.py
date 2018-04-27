@@ -37,6 +37,7 @@ oled.show()
 
 while True:
     oled.fill_rect(0, 60, 128, 20, 1)
+    oled.show()
     #
     try:
         departures = efa.departures()
