@@ -4,8 +4,7 @@ A fast streaming JSON parser for Python
 ---------------------------------------
 
 ```
-https://github.com/jdmansour/naya
-2d3a93773887cbdc21bb630c378517f7cfd08d93 
+https://github.com/aschuma/naya/blob/944564ab91525825478e03da6e378f5a85017a6d/naya/json.py
 ```
 
 
