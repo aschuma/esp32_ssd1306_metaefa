@@ -29,12 +29,16 @@ class Departure:
     def __repr__(self):
         return '{} {} {} {} {}'.format(self.departure, self.delay, self.name, self.direction, self.number)
 
+    def get_key(self):
+        return self.departure
+
 
 def departures():
+
     departure_list = []
     for station in config.efa_stations: 
         departure_list = departure_list + departures_for_station(station)
-    return departure_list
+    return sorted(departure_list,key=Departure.get_key)
 
 
 def departures_for_station(station):
