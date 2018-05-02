@@ -10,6 +10,7 @@ except:
 
 import config
 import naya.json
+import gc
 
 
 class Departure:
@@ -37,22 +38,14 @@ class Departure:
 def departures():
     departure_list = []
     for station in config.efa_stations:
-        departure_list = departure_list + departures_for_station(station)
+        departure_list = departure_list + _departures_for_station(station)
     return sorted(departure_list, key=Departure.get_key)
 
 
-def departures_for_station(station):
-    print("STATION:", station)
-    # get the raw data
-    url = config.efa_departure_rest_endpoint_template.format(station['id'])
-    print(" URL:", url)
-    request = requests.get(url, stream=True)
-    print(" RESPONSE_CODE:", request.status_code)
-    data = io.StringIO(request.text)
-    request.close()
+def _departures_for_station(station):
     # extract data from json
     limit = station['fetchLimit']
-    items = naya.json.stream_array(naya.json.tokenize(data))
+    items = naya.json.stream_array(naya.json.tokenize(_raw_data_for_station(station)))
     answer = []
     if limit > 0:
         for item in items:
@@ -65,3 +58,15 @@ def departures_for_station(station):
                     if limit <= 0:
                         return answer
     return answer
+
+
+def _raw_data_for_station(station):
+    print("STATION:", station)
+    # get the raw data
+    url = config.efa_departure_rest_endpoint_template.format(station['id'])
+    print(" URL:", url)
+    request = requests.get(url, stream=True)
+    print(" RESPONSE_CODE:", request.status_code)
+    data = io.StringIO(request.text)
+    request.close()
+    return data
