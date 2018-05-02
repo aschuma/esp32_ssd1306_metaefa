@@ -1,5 +1,9 @@
-network_name = 'freifunk'
-network_pw = ''
+network = [
+    {
+        "name": 'freifunk',
+        "pw": ''
+    }
+]
 
 efa_departure_rest_endpoint_template = 'https://efa-api.asw.io/api/v1/station/{}/departures/'
 efa_stations = [
