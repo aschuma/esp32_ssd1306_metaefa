@@ -1,15 +1,22 @@
 def network_connect():
     import network
     import config
+    from utime import sleep
 
     sta_if = network.WLAN(network.STA_IF)
-    if not sta_if.isconnected():
-        print('connecting to network ...')
-        sta_if.active(True)
-        sta_if.connect(config.network_name, config.network_pw)
-        while not sta_if.isconnected():
-            pass
+    while not sta_if.isconnected():
+        for network in config.network:
+            if not sta_if.isconnected():
+                print('connecting to network ', network['name'], ' ...')
+                sta_if.active(True)
+                sta_if.connect(network['name'], network['pw'])
+                sleep(10)
     print('network config:', sta_if.ifconfig())
+
+
+def network_disconnect():
+    import network
+    network.WLAN(network.STA_IF).disconnect()
 
 
 def ntp_time_sync():
