@@ -26,7 +26,7 @@ def network_connect():
         config_list = network_configurations()
         config = config_list[0] if config_list else None
         if config:
-            print('network::connecting to', config['name'])
+            print('network::connecting:', config['name'])
             sta_if.active(True)
             sta_if.connect(config['name'], config['pw'])
             while not sta_if.isconnected():
@@ -52,6 +52,6 @@ def ntp_time_sync():
             ntptime.settime()
             time_set = True
         except Exception as e:
-            print('ntp_sync::except', str(e))
+            print('ntp_sync::except:', str(e))
             sleep(2)
-        print('ntp_sync::utc', str(localtime()))
+        print('ntp_sync::utc:', str(localtime()))

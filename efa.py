@@ -8,9 +8,9 @@ try:
 except:
     import requests
 
+import gc
 import config
 import naya.json
-import gc
 
 
 class Departure:
@@ -27,9 +27,11 @@ class Departure:
         self.departureTimeFormatted = '{:02d}:{:02d}'.format(int(departure_time['hour']), int(departure_time['minute']))
         self.distance_in_minutes = conf['distance_in_minutes']
         self.name = conf['name']
+    
     #
     def __repr__(self):
         return '{:5s} {:3s} {:02d} {:2s}'.format(self.departureTimeFormatted, self.number, self.delay, self.name)
+    
     #
     def get_key(self):
         return self.departure
@@ -43,30 +45,31 @@ def departures():
 
 
 def _departures_for_station(station):
-    # extract data from json
-    limit = station['fetchLimit']
-    items = naya.json.stream_array(naya.json.tokenize(_raw_data_for_station(station)))
-    answer = []
-    if limit > 0:
-        for item in items:
-            if item['number'] in station['numbers']:
-                if item['direction'] in station['directions']:
-                    departure = Departure(item, station)
-                    print(" - ", limit, departure)
-                    answer.append(departure)
-                    limit = limit - 1
-                    if limit <= 0:
-                        return answer
-    return answer
-
-
-def _raw_data_for_station(station):
-    print("STATION:", station)
-    # get the raw data
+    gc.collect()
+    print("")
+    print("efa::station_name:", station['name'] )
+    print("efa::station:", station)
     url = config.efa_departure_rest_endpoint_template.format(station['id'])
-    print(" URL:", url)
+    print("efa::url:", url)
     request = requests.get(url, stream=True)
-    print(" RESPONSE_CODE:", request.status_code)
-    data = io.StringIO(request.text)
+    print("efa::status_code:", request.status_code)
+    print("efa::response_length:", len(request.text))
+    station_json_stream = io.StringIO(request.text)
     request.close()
-    return data
+    try:
+        limit = station['fetchLimit']
+        items = naya.json.stream_array(naya.json.tokenize(station_json_stream))
+        answer = []
+        if limit > 0:
+            for item in items:
+                if item['number'] in station['numbers']:
+                    if item['direction'] in station['directions']:
+                        departure = Departure(item, station)
+                        print("- ", limit, departure)
+                        answer.append(departure)
+                        limit = limit - 1
+                        if limit <= 0:
+                            return answer
+    finally:
+        station_json_stream.close()
+    return answer

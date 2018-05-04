@@ -11,7 +11,7 @@ efa_stations = [
         "id": "5006074",
         "fetchLimit": 2,
         "name": "RH",
-        "fullName": "Rathhaus",
+        "fullName": "Rathaus",
         "distance_in_minutes": 4,
         "numbers": ['U1'],
         "directions": ['Neugereut', 'Fellbach Lutherkirche']
