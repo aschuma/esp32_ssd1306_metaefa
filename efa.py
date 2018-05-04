@@ -53,8 +53,8 @@ def _departures_for_station(station):
     print("efa::url:", url)
     request = requests.get(url, stream=True)
     print("efa::status_code:", request.status_code)
-    print("efa::response_length:", len(request.text))
-    station_json_stream = io.StringIO(request.text)
+    print("efa::truncating response")
+    station_json_stream = io.StringIO(str(request.raw.read(1024*10), 'UTF-8'))  # still don't know how convert a byte stream to a character stream
     request.close()
     try:
         limit = station['fetchLimit']
