@@ -8,7 +8,6 @@ try:
 except:
     import requests
 
-import gc
 import config
 import naya.json
 
@@ -37,6 +36,35 @@ class Departure:
         return self.departure
 
 
+class _CharStream:
+    def __init__(self, bytestream):
+        self.bytestream = bytestream
+        self.buffer = list()
+    
+    def close(self):
+        self.bytestream.close()
+    
+    def read(self, size):
+        if size == 1:
+            return self.read_one()
+        else:
+            raise NotImplemented
+    
+    def read_one(self):
+        answer = None
+        b = self.bytestream.read(1)
+        if b is None:
+            pass
+        else:
+            try:
+                self.buffer.append(b)
+                answer = bytes([int.from_bytes(b, 'little') for b in self.buffer]).decode()
+                self.buffer = list()
+            except UnicodeError as u:
+                answer = self.read_one()
+        return answer
+
+
 def departures():
     departure_list = []
     for station in config.efa_stations:
@@ -45,17 +73,15 @@ def departures():
 
 
 def _departures_for_station(station):
-    gc.collect()
     print("")
-    print("efa::station_name:", station['name'] )
+    print("efa::station_name:", station['name'])
     print("efa::station:", station)
     url = config.efa_departure_rest_endpoint_template.format(station['id'])
     print("efa::url:", url)
     request = requests.get(url, stream=True)
     print("efa::status_code:", request.status_code)
-    print("efa::truncating response")
-    station_json_stream = io.StringIO(str(request.raw.read(1024*10), 'UTF-8'))  # still don't know how convert a byte stream to a character stream
-    request.close()
+    print("efa::wrapping bytes")
+    station_json_stream = _CharStream(request.raw)
     try:
         limit = station['fetchLimit']
         items = naya.json.stream_array(naya.json.tokenize(station_json_stream))
@@ -71,5 +97,6 @@ def _departures_for_station(station):
                         if limit <= 0:
                             return answer
     finally:
+        request.close()
         station_json_stream.close()
     return answer
