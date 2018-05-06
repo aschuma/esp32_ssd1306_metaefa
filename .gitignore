@@ -1,1 +1,4 @@
-config.py
+src/config.py
+py3
+.idea
+.idea/dictionaries
