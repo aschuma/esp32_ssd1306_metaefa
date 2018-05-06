@@ -9,16 +9,16 @@ _|            _|_|  _|    _|        _|    _|      _|          _|      _|    _|
                     _|   
 ```
 
-The aim of this project is to display the departure data of one ore more VVS stations on a esp32 microcontroller equipped with a oled ssd1306 display (Haltestellenmonitor). 
+The aim of this project is to display the departure data of one ore more VVS stations (Haltestellenmonitor) on an ESP32 microcontroller equipped with an Oled SSD1306 display. 
 VVS is the Stuttgart public transport system. VVS provides the current timetable of relevant stations by a public available REST endpoint. 
 Micropython is the programming language of choice.
 
-Here is what you get when you deploy the application to your esp32 board:
+Here is what you get when you deploy the application to your ESP32 board:
 
 ![Demo](https://github.com/aschuma/esp32_ssd1306_metaefa/raw/master/esp32_ssd1306_metaefa.jpg)
 
 The top line contains the current time.
-The other lines hold the departure times, the tram/bus line number, the delay and a short name of the station (RH, SMi) of the tram or bus. 
+The other lines hold the departure time, the tram/bus line number, the delay and the short name of the station (RH, SMi). 
 The relevant tram/bus lines and station are configurable.
 
 
@@ -53,9 +53,9 @@ This is just a brief description what steps have to be performed to enable the d
    pip3 install -r requirements.txt 
    ```
 
-## Micropython - prepare esp32 board
+## Micropython - prepare the ESP32 board
 
-- Download the latest esp32 image from 
+- Download the latest ESP32 micropython image from 
    https://micropython.org/download 
 - Prepare the board
   ```
@@ -77,9 +77,8 @@ This is just a brief description what steps have to be performed to enable the d
    ```
    rshell -p /dev/cu.SLAB_USBtoUART
    ```         
-   The files on the board should be available at `/pyboard`
-   You may copy files to the board by using the `cp` command.
-   - https://github.com/dhylands/rshell
+   The files on the board should be available locally at `/pyboard` on your dev machine.
+   You may copy files to the board by using the `cp` command. More details are availbale here: https://github.com/dhylands/rshell
    
 Please be aware that you can not use multiple shells simultaneously to the access the board.
 
@@ -90,10 +89,16 @@ Please be aware that you can not use multiple shells simultaneously to the acces
 - Copy  recursively all files of `src` to the root directory of the board using the `rshell` tool or the `ampy` tool.
    - https://github.com/dhylands/rshell 
    - https://github.com/adafruit/ampy
+- The board should reboot itself. If not unplug the USB cord and plug it back again. 
+- In case of problems connect to the board via
+   ```
+   screen /dev/cu.SLAB_USBtoUART 115200
+   ```
+   press `CTRL-C` and `CTRL-D` to trigger a reboot. Then you should see some log messages. 
    
 # Finally
 
-Be aware that my primary coding language is not python. So please forgive me my bad coding style. I'am still learning python and esp32 development.
+Be aware that my primary coding language is not python. So please forgive me my bad coding style. I'am still learning python and ESP32 development.
 
 Please feel free to issue a bug report or submit a PR. Any helping hand is welcome.
    
