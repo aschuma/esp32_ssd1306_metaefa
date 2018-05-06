@@ -13,13 +13,13 @@ The aim of this project is to display the departure data of one ore more VVS sta
 VVS is the Stuttgart public transport system. VVS provides the current timetable of relevant stations by a public available REST endpoint. 
 Micropython is the programming language of choice for this project.
 
-Here is what you get when you deploy the application to your ESP32 board:
+Here is what you get when you deploy the application on your ESP32 board:
 
 ![Demo](https://github.com/aschuma/esp32_ssd1306_metaefa/raw/master/esp32_ssd1306_metaefa.jpg)
 
 The top line contains the current time.
 The other lines hold the departure time, the tram/bus line number, the delay and the short name of the station (RH, SMi). 
-The relevant tram/bus lines and station are configurable.
+The relevant tram/bus lines and stations are configurable.
 
 
 Links:
@@ -90,11 +90,9 @@ Please be aware that you can not use multiple shells simultaneously to the acces
    - https://github.com/dhylands/rshell 
    - https://github.com/adafruit/ampy
 - The board should reboot itself. If not unplug the USB cord and plug it back again. 
-- In case of problems connect to the board via
-   ```
+- In case of problems connect to the board via  ```
    screen /dev/cu.SLAB_USBtoUART 115200
-   ```
-   press `CTRL-C` and `CTRL-D` to trigger a reboot. Then you should see some log messages. 
+   ``` press `CTRL-C` and `CTRL-D` to trigger a reboot. Then you should see some log messages. 
    
 # Finally
 
