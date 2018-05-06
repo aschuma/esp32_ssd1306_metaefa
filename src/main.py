@@ -57,8 +57,10 @@ while True:
     except Exception as e:
         print(e)
         oled.fill(0)
-        oled.text('Error', 3, 3)
-        oled.text(str(e), 3, 23)
+        oled.text(cet_time.current_time_formatted(), 3, 3)
+        oled.text('Error', 3, 28)
+        oled.text(str(e), 3, 38)
+        oled.invert(1)
         oled.show()
     #
     #
