@@ -61,7 +61,7 @@ This is just a brief description what steps have to be performed to enable the d
   ```
   esptool.py --port /dev/cu.SLAB_USBtoUART flash_id
   esptool.py --port /dev/cu.SLAB_USBtoUART erase_flash
-  esptool.py --port /dev/cu.SLAB_USBtoUART write_flash -z 0x1000 <path-to-downlaoded-image>
+  esptool.py --port /dev/cu.SLAB_USBtoUART write_flash -z 0x1000 <path-to-downloaded-image>
   
   ```
   
