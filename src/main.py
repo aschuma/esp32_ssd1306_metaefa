@@ -1,9 +1,21 @@
 import machine
-import utime
+import time
 
 import cet_time
 import display
 import efa
+
+
+def reachable_departures(departure_list):
+    now = cet_time.current()
+    return [departure for departure in departure_list if departure.reachable(now)]
+
+
+def format_departure(departure):
+    now = cet_time.current()
+    return '{:2d}min {:3s} {:02d} {:2s}'.format(departure.remaining_minutes(now), departure.number, departure.delay,
+                                                departure.name)
+                        
 
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = display.Display(i2c)
@@ -40,12 +52,12 @@ while True:
     oled.show()
     #
     try:
-        departures = efa.departures()
+        departures = reachable_departures(efa.departures())
         #
-        line0 = str(departures[0])
-        line1 = str(departures[1])
-        line2 = str(departures[2])
-        line3 = str(departures[3])
+        line0 = format_departure(departures[0])
+        line1 = format_departure(departures[1])
+        line2 = format_departure(departures[2])
+        line3 = format_departure(departures[3])
         oled.fill(0)
         oled.invert(0)
         oled.text(cet_time.current_time_formatted(), 3, 3)
@@ -64,5 +76,4 @@ while True:
         oled.show()
     #
     #
-    utime.sleep(45)
-
+    time.sleep(45)
