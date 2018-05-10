@@ -18,8 +18,8 @@ Here is what you get when you deploy the application on your ESP32 board:
 ![Demo](https://github.com/aschuma/esp32_ssd1306_metaefa/raw/master/esp32_ssd1306_metaefa.jpg)
 
 The top line contains the current time.
-The other lines hold the departure time, the tram/bus line number, the delay and the short name of the station (RH, SMi). 
-The relevant tram/bus lines and stations are configurable.
+The other lines hold the tram/bus line number, the departure time, the delay and the short name of the station (RH, SMi). 
+(The relevant tram/bus lines and stations are configurable within a configuration resource)
 
 
 Links:
