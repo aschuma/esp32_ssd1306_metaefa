@@ -31,17 +31,17 @@ class Departure:
     
     def time_to_leaf_in_seconds_since_epoch(self):
         return self.departure_in_seconds_since_epoch - self.walking_distance_in_minutes * 60
-    
+
     def __repr__(self):
-        return '{:5s} {:3s} {:02d} {:2s} {} {}'.format(self.departure_time_formatted, self.number, self.delay,
-                                                       self.name, self.departure_in_seconds_since_epoch,
-                                                       self.time_to_leaf_in_seconds_since_epoch())
+        return '{:5s} {:3s} {:02d} {:2s} {}'.format(self.departure_time_formatted, self.number, self.delay,
+                                                    self.name,
+                                                    self.time_to_leaf_in_seconds_since_epoch())
     
     def reachable(self, seconds_since_epoch):
         return self.time_to_leaf_in_seconds_since_epoch() >= int(seconds_since_epoch)
     
     def remaining_minutes(self, seconds_since_epoch):
-        return int((self.departure_in_seconds_since_epoch - int(seconds_since_epoch)) / 60)
+        return int((self.time_to_leaf_in_seconds_since_epoch() - int(seconds_since_epoch)) / 60)
     
     def get_key(self):
         return self.departure_in_seconds_since_epoch
