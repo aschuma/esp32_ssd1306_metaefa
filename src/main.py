@@ -13,7 +13,7 @@ def reachable_departures(departure_list):
 
 def format_departure(departure):
     now = cet_time.current()
-    return '{:2d}min {:3s} {:02d} {:2s}'.format(departure.remaining_minutes(now), departure.number, departure.delay,
+    return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
                                                 departure.name)
                         
 
@@ -48,7 +48,7 @@ oled.invert(0)
 oled.show()
 
 while True:
-    oled.fill_rect(0, 60, 128, 20, 1)
+    oled.fill_rect(0, 62, 128, 20, 1)
     oled.show()
     #
     try:
