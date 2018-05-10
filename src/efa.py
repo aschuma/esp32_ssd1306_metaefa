@@ -93,10 +93,10 @@ def _departures_for_station(station):
     print("efa::status_code:", request.status_code)
     print("efa::wrapping bytes")
     station_json_stream = _CharStream(request.raw)
+    answer = []
     try:
         limit = station['fetchLimit']
         items = naya.json.stream_array(naya.json.tokenize(station_json_stream))
-        answer = []
         if limit > 0:
             for item in items:
                 if item['number'] in station['numbers']:
