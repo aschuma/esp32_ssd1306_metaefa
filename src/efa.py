@@ -8,12 +8,9 @@ try:
 except:
     import requests
 
-import time
-
+import cet_time
 import config
 import naya.json
-
-_is_micropython = 'timezone' not in dir(time)
 
 
 class Departure:
@@ -23,52 +20,31 @@ class Departure:
         self.number = json_data['number']
         self.stopName = json_data['stopName']
         self.direction = json_data['direction']
-        self.departure = (
+        self.departure_in_seconds_since_epoch = cet_time.mktime(
             int(departure_time['year']), int(departure_time['month']), int(departure_time['day']),
             int(departure_time['hour']),
-            int(departure_time['minute']), 0)
-        self.departureTimeFormatted = '{:02d}:{:02d}'.format(int(departure_time['hour']), int(departure_time['minute']))
-        self.distance_in_minutes = conf['distance_in_minutes']
+            int(departure_time['minute']))
+        self.departure_time_formatted = '{:02d}:{:02d}'.format(int(departure_time['hour']),
+                                                               int(departure_time['minute']))
+        self.walking_distance_in_minutes = conf['distance_in_minutes']
         self.name = conf['name']
-        self.time_to_leaf = self._calculate_time_to_leaf((self.departure[0], self.departure[1], self.departure[2],
-                                                          self.departure[3],
-                                                          self.departure[4] - self.distance_in_minutes,
-                                                          self.departure[5], 0, 0, 0))
+    
+    def time_to_leaf_in_seconds_since_epoch(self):
+        return self.departure_in_seconds_since_epoch - self.walking_distance_in_minutes * 60
     
     def __repr__(self):
-        return '{:5s} {:3s} {:02d} {:2s} {}'.format(self.departureTimeFormatted, self.number, self.delay, self.name,
-                                                    self.time_to_leaf)
+        return '{:5s} {:3s} {:02d} {:2s} {} {}'.format(self.departure_time_formatted, self.number, self.delay,
+                                                       self.name, self.departure_in_seconds_since_epoch,
+                                                       self.time_to_leaf_in_seconds_since_epoch())
     
-    @staticmethod
-    def _calculate_time_to_leaf(departure_tuple):
-        record = time.localtime(time.mktime(departure_tuple))
-        if _is_micropython:
-            return record
-        else:
-            return (record.tm_year,
-                    record.tm_mon,
-                    record.tm_mday,
-                    record.tm_hour,
-                    record.tm_min,
-                    record.tm_sec)
+    def reachable(self, seconds_since_epoch):
+        return self.time_to_leaf_in_seconds_since_epoch() >= int(seconds_since_epoch)
     
-    def reachable(self, cet_time_now):
-        return self.time_to_leaf >= cet_time_now
-    
-    def remaining_minutes(self, cet_time_now):
-        if _is_micropython:
-            return int((time.mktime(self.time_to_leaf) - time.mktime(cet_time_now)) / 60)
-        else:
-            departure_ts = time.mktime(
-                (self.departure[0], self.departure[1], self.departure[2], self.departure[3], self.departure[4],
-                 self.departure[5], 0, 0, 0))
-            now_ts = time.mktime(
-                (cet_time_now[0], cet_time_now[1], cet_time_now[2], cet_time_now[3], cet_time_now[4],
-                 cet_time_now[5], 0, 0, 0))
-            return int((departure_ts - now_ts) / 60)
+    def remaining_minutes(self, seconds_since_epoch):
+        return int((self.departure_in_seconds_since_epoch - int(seconds_since_epoch)) / 60)
     
     def get_key(self):
-        return self.departure
+        return self.departure_in_seconds_since_epoch
 
 
 class _CharStream:

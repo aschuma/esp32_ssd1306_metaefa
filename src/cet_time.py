@@ -1,12 +1,11 @@
-
 try:
     import utime
-
-
+    
+    
     def _mkd(year, month, day, h, m, s):
         return utime.mktime((year, month, day, h, m, s, 0, 0))
-
-
+    
+    
     _utc_transition_ts = [
         _mkd(2000, 3, 26, 1, 0, 0),
         _mkd(2000, 10, 29, 1, 0, 0),
@@ -85,30 +84,37 @@ try:
         _mkd(2037, 3, 29, 1, 0, 0),
         _mkd(2037, 10, 25, 1, 0, 0)
     ]
-
-
+    
+    _one_hour_in_seconds = 60 * 60
+    
+    
     def _is_summer_time(sec_since_2000_input):
         transition_list = [ts for ts in _utc_transition_ts if ts < sec_since_2000_input]
         return len(transition_list) % 2 == 1
-
-
-    def current():
-        one_hour_in_seconds = 60 * 60
-        now_utc = utime.mktime(utime.localtime())
-
-        if _is_summer_time(now_utc):
-            offset = 2
-        else:
-            offset = 1
-
-        return utime.localtime(now_utc + one_hour_in_seconds * offset)
+    
+    
+    def mktime(year, month, day, hour, minute):
+        utc_ts = utime.mktime((year, month, day, hour, minute, 0, 0, 0))
+        offset = 2 if _is_summer_time(utime.time()) else 1
+        return utc_ts - offset * _one_hour_in_seconds
+    
+    
+    def now():
+        now_utc = utime.time()
+        offset = 2 if _is_summer_time(now_utc) else 1
+        
+        return utime.localtime(now_utc + _one_hour_in_seconds * offset)
 
 
 except:
     import time
-
-
-    def current():
+    
+    
+    def mktime(year, month, day, hour, minute):
+        return int(time.mktime((year, month, day, hour, minute, 0, 0, 0, 0)))
+    
+    
+    def now():
         record = time.localtime()
         return (record.tm_year,
                 record.tm_mon,
@@ -121,5 +127,5 @@ except:
 
 
 def current_time_formatted():
-    date_time = current()
-    return '{:02d}:{:02d}'.format(int(date_time[3]), int(date_time[4]))
+    date_time = now()
+    return '{:02d}:{:02d}'.format(date_time[3], date_time[4])

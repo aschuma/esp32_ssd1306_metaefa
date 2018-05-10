@@ -7,12 +7,12 @@ import efa
 
 
 def reachable_departures(departure_list):
-    now = cet_time.current()
+    now = time.time()
     return [departure for departure in departure_list if departure.reachable(now)]
 
 
 def format_departure(departure):
-    now = cet_time.current()
+    now = time.time()
     return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
                                                 departure.name)
                         
@@ -39,7 +39,7 @@ ntp_time_sync()
 oled.invert(0)
 oled.show()
 
-t = cet_time.current()
+t = cet_time.now()
 tstr = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}'.format(t[0], t[1], t[2], t[3], t[4])
 
 oled.fill(0)
