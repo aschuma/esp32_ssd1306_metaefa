@@ -4,6 +4,7 @@ import time
 import cet_time
 import display
 import efa
+import timer
 
 
 def reachable_departures(departure_list):
@@ -11,69 +12,79 @@ def reachable_departures(departure_list):
     return [departure for departure in departure_list if departure.reachable(now)]
 
 
-def format_departure(departure):
-    now = time.time()
-    return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
-                                                departure.name)
-                        
+class Model:
+    def __init__(self):
+        self.error = None
+        self.departures = []
+        self.processing = False
+        self.message = None
+    
+    @staticmethod
+    def format_departure(departure):
+        now = time.time()
+        return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
+                                                 departure.name)
+    
+    def paint(self, oled):
+        oled.fill(0)
+        oled.invert(0)
+        oled.text(cet_time.current_time_formatted(), 3, 3)
+        if self.error:
+            oled.text('Error', 3, 28)
+            oled.text(str(self.error), 3, 38)
+            oled.invert(1)
+        elif self.message:
+            oled.fill(0)
+            oled.text(str(self.message), 3, 3)
+            oled.center_fill_circle(0.3, 1)
+            oled.center_fill_circle(0.2, 0)
+            oled.center_fill_circle(0.1, 1)
+        else:
+            if len(self.departures) > 0:
+                oled.text(self.format_departure(self.departures[0]), 3, 18)
+            if len(self.departures) > 1:
+                oled.text(self.format_departure(self.departures[1]), 3, 28)
+            if len(self.departures) > 2:
+                oled.text(self.format_departure(self.departures[2]), 3, 38)
+            if len(self.departures) > 3:
+                oled.text(self.format_departure(self.departures[3]), 3, 48)
+        if self.processing:
+            oled.fill_rect(0, 62, 128, 20, 1)
+        oled.show()
+
+
+model = Model()
 
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = display.Display(i2c)
 
-oled.fill(0)
-oled.center_fill_circle(0.6, 0)
-oled.center_fill_circle(0.5, 1)
-oled.center_fill_circle(0.4, 0)
-oled.center_fill_circle(0.3, 1)
-oled.center_fill_circle(0.2, 0)
-oled.center_fill_circle(0.1, 1)
-oled.show()
+scheduler = timer.Scheduler(lambda: model.paint(oled))
+scheduler.start()
 
-network_connect()
+model.message = 'Network...'
+model.processing = False
 
-oled.invert(1)
-oled.show()
-
-ntp_time_sync()
-
-oled.invert(0)
-oled.show()
-
-t = cet_time.now()
-tstr = '{:04d}-{:02d}-{:02d} {:02d}:{:02d}'.format(t[0], t[1], t[2], t[3], t[4])
-
-oled.fill(0)
-oled.text(tstr, 1, int(oled.height / 2.0) - 8)
-oled.invert(0)
-oled.show()
-
-while True:
-    oled.fill_rect(0, 62, 128, 20, 1)
-    oled.show()
-    #
-    try:
-        departures = reachable_departures(efa.departures())
-        #
-        line0 = format_departure(departures[0])
-        line1 = format_departure(departures[1])
-        line2 = format_departure(departures[2])
-        line3 = format_departure(departures[3])
-        oled.fill(0)
-        oled.invert(0)
-        oled.text(cet_time.current_time_formatted(), 3, 3)
-        oled.text(line0, 3, 18)
-        oled.text(line1, 3, 28)
-        oled.text(line2, 3, 38)
-        oled.text(line3, 3, 48)
-        oled.show()
-    except Exception as e:
-        print(e)
-        oled.fill(0)
-        oled.text(cet_time.current_time_formatted(), 3, 3)
-        oled.text('Error', 3, 28)
-        oled.text(str(e), 3, 38)
-        oled.invert(1)
-        oled.show()
-    #
-    #
-    time.sleep(45)
+try:
+    network_connect()
+    model.message = 'NTP...'
+    ntp_time_sync()
+    model.message = 'EFA...'
+except Exception as e:
+    model.message = None
+    model.error = str(e)
+    model.message = False
+    model.paint(oled)
+    scheduler.stop()
+else:
+    while True:
+        try:
+            model.processing = True
+            model.departures = reachable_departures(efa.departures())
+            model.error = None
+            model.message = None
+        except Exception as e:
+            print(e)
+            model.error = e
+        finally:
+            model.processing = False
+        time.sleep(45)
