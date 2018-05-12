@@ -128,4 +128,4 @@ except:
 
 def current_time_formatted():
     date_time = now()
-    return '{:02d}:{:02d}'.format(date_time[3], date_time[4])
+    return '{:02d}:{:02d}:{:02d}'.format(date_time[3], date_time[4], date_time[5])
