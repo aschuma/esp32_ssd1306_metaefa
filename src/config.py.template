@@ -9,7 +9,7 @@ efa_departure_rest_endpoint_template = 'https://efa-api.asw.io/api/v1/station/{}
 efa_stations = [
     {
         "id": "5006074",
-        "fetchLimit": 2,
+        "fetchLimit": 3,
         "name": "RH",
         "fullName": "Rathaus",
         "distance_in_minutes": 4,

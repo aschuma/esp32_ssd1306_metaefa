@@ -50,3 +50,13 @@ class Display(ssd1306.SSD1306_I2C):
         s = float(scale)
         r = s * self.width / 2.0
         self.fill_circle(int(self.width / 2.0), int(self.height / 2.0), int(r), *args, **kwargs)
+
+    def corner_se_circle(self, scale, *args, **kwargs):
+        s = float(scale)
+        r = s * self.width / 2.0
+        self.circle(self.width, self.height, int(r), *args, **kwargs)
+
+    def corner_se_fill_circle(self, scale, *args, **kwargs):
+        s = float(scale)
+        r = s * self.width / 2.0
+        self.fill_circle(self.width, self.height, int(r), *args, **kwargs)
