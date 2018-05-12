@@ -7,11 +7,6 @@ import efa
 import timer
 
 
-def reachable_departures(departure_list):
-    now = time.time()
-    return [departure for departure in departure_list if departure.reachable(now)]
-
-
 class View:
     def __init__(self):
         self.error = None
@@ -64,17 +59,22 @@ class View:
             oled.corner_se_fill_circle(0.10, 1)
             oled.corner_se_fill_circle(0.05, 0)
         else:
+            reachable = self.reachable_departures()
             if len(self.departures) > 0:
-                oled.text(self.format_departure(self.departures[0]), 3, 18)
+                oled.text(self.format_departure(reachable[0]), 3, 18)
             if len(self.departures) > 1:
-                oled.text(self.format_departure(self.departures[1]), 3, 28)
+                oled.text(self.format_departure(reachable[1]), 3, 28)
             if len(self.departures) > 2:
-                oled.text(self.format_departure(self.departures[2]), 3, 38)
+                oled.text(self.format_departure(reachable[2]), 3, 38)
             if len(self.departures) > 3:
-                oled.text(self.format_departure(self.departures[3]), 3, 48)
+                oled.text(self.format_departure(reachable[3]), 3, 48)
         if self.processing:
             oled.fill_rect(0, 62, 128, 20, 1)
         oled.show()
+
+    def reachable_departures(self):
+        now = time.time()
+        return [departure for departure in self.departures if departure.reachable(now)]
 
 
 view = View()
@@ -85,6 +85,10 @@ oled = display.Display(i2c)
 scheduler = timer.Scheduler(lambda: view.paint(oled))
 scheduler.start()
 
+
+def stop():
+    scheduler.stop()
+    
 try:
     view.show_message('Booting...')
     time.sleep(2)
@@ -97,17 +101,17 @@ try:
 except Exception as e:
     view.show_error(e)
     view.paint(oled)
-    scheduler.stop()
+    stop()
 else:
     while True:
         try:
             view.show_progress(True)
-            departures = reachable_departures(efa.departures())
+            departures = efa.departures()
             view.show_departures(departures)
         except Exception as e:
             print(e)
             view.show_error(e)
         finally:
             view.show_progress(False)
-        time.sleep(45)
+        time.sleep(60)
 
