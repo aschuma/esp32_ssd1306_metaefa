@@ -82,12 +82,14 @@ view = View()
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = display.Display(i2c)
 
-scheduler = timer.Scheduler(lambda: view.paint(oled))
+scheduler = timer.default(lambda: view.paint(oled), 1)
+ntpScheduler = timer.daily(lambda: ntp_time_sync(), 2)
 scheduler.start()
-
+ntpScheduler.start()
 
 def stop():
     scheduler.stop()
+    ntpScheduler.stop()
     
 try:
     view.show_message('Booting...')
@@ -113,5 +115,5 @@ else:
             view.show_error(e)
         finally:
             view.show_progress(False)
-        time.sleep(60)
+        time.sleep(75)
 
