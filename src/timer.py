@@ -1,10 +1,6 @@
 from machine import Timer
 
 
-def daily(job, id=1):
-    return Scheduler(job=job, id=id, period=1000 * 60 * 60 * 24)
-
-
 def default(job, id=2):
     return Scheduler(job=job, id=id, period=500)
 
@@ -21,8 +17,10 @@ class Scheduler:
         if self.timer is None:
             self.timer = Timer(self.id)
             self.timer.init(period=self.period, mode=Timer.PERIODIC, callback=self.simple_job)
+        return self
     
     def stop(self):
         if self.timer is not None:
             self.timer.deinit()
             self.timer = None
+        return self

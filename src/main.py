@@ -1,10 +1,13 @@
 import machine
+import micropython
 import time
 
 import cet_time
 import display
 import efa
 import timer
+
+micropython.alloc_emergency_exception_buf(100)
 
 
 class View:
@@ -71,7 +74,7 @@ class View:
         if self.processing:
             oled.fill_rect(0, 62, 128, 20, 1)
         oled.show()
-
+    
     def reachable_departures(self):
         now = time.time()
         return [departure for departure in self.departures if departure.reachable(now)]
@@ -82,23 +85,20 @@ view = View()
 i2c = machine.I2C(scl=machine.Pin(4), sda=machine.Pin(5))
 oled = display.Display(i2c)
 
-scheduler = timer.default(lambda: view.paint(oled), 1)
-ntpScheduler = timer.daily(lambda: ntp_time_sync(), 2)
-scheduler.start()
-ntpScheduler.start()
+scheduler = timer.default(lambda: view.paint(oled)).start()
+
 
 def stop():
     scheduler.stop()
-    ntpScheduler.stop()
-    
+
+
+counter = 0
+
 try:
     view.show_message('Booting...')
     time.sleep(2)
-    view.show_message('Network...')
-    network_connect()
-    view.show_message('NTP...')
-    time.sleep(1)
-    ntp_time_sync()
+    network_connect(lambda: view.show_message('Network...'))
+    ntp_time_sync(lambda: view.show_message('NTP...'))
     view.show_message('EFA...')
 except Exception as e:
     view.show_error(e)
@@ -106,8 +106,10 @@ except Exception as e:
     stop()
 else:
     while True:
+        counter = counter + 1
         try:
             view.show_progress(True)
+            network_connect(lambda: view.show_message('Network...'))
             departures = efa.departures()
             view.show_departures(departures)
         except Exception as e:
@@ -116,4 +118,5 @@ else:
         finally:
             view.show_progress(False)
         time.sleep(75)
-
+        if counter % 100 == 0:
+            ntp_time_sync(lambda: view.show_message('NTP...'))

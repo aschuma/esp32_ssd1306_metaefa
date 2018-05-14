@@ -1,3 +1,7 @@
+def _noop():
+    pass
+
+
 def network_scan():
     import network
     
@@ -17,12 +21,14 @@ def network_configurations():
     return available_nw_config_list
 
 
-def network_connect():
+def network_connect(connecting=lambda: _noop()):
     import network
     from utime import sleep
     
     sta_if = network.WLAN(network.STA_IF)
     if not sta_if.isconnected():
+        connecting()
+        sleep(1)
         config_list = network_configurations()
         config = config_list[0] if config_list else None
         if config:
@@ -41,13 +47,14 @@ def network_disconnect():
     network.WLAN(network.STA_IF).disconnect()
 
 
-def ntp_time_sync():
+def ntp_time_sync(syncing=lambda: _noop()):
     import ntptime
     from utime import sleep, localtime
     
     time_set = False
     while not time_set:
         try:
+            syncing()
             print('ntp_sync::fetching')
             ntptime.settime()
             time_set = True
