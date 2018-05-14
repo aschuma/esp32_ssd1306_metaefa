@@ -86,11 +86,14 @@ try:
     ]
     
     _one_hour_in_seconds = 60 * 60
-    
-    
+
+
     def _is_summer_time(sec_since_2000_input):
-        transition_list = [ts for ts in _utc_transition_ts if ts < sec_since_2000_input]
-        return len(transition_list) % 2 == 1
+        count = 0
+        for ts in _utc_transition_ts:
+            if ts < sec_since_2000_input:
+                count = count + 1
+        return count % 2 == 1
     
     
     def mktime(year, month, day, hour, minute):
