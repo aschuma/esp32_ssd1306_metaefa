@@ -24,7 +24,7 @@ class View:
                                                  departure.name)
     
     def show_error(self, error):
-        self.error = error
+        self.error = str(error)
         self.processing = False
         self.message = None
     
@@ -45,9 +45,8 @@ class View:
         oled.invert(0)
         oled.text(cet_time.current_time_formatted(), 3, 3)
         if self.error:
-            oled.text('Error', 3, 28)
-            oled.text(str(self.error), 3, 38)
-            oled.invert(1)
+            oled.text('ERROR', 3, 28)
+            oled.text(self.error, 3, 38)
         elif self.message:
             oled.fill(0)
             oled.text(str(self.message), 3, 3)

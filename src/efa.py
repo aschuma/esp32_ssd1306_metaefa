@@ -16,7 +16,8 @@ import naya.json
 class Departure:
     def __init__(self, json_data, conf):
         departure_time = json_data['departureTime']
-        self.delay = int(json_data['delay'])
+        delay = int(json_data['delay'])
+        self.delay = delay if delay >= 0 else 0
         self.number = json_data['number']
         self.stopName = json_data['stopName']
         self.direction = json_data['direction']
