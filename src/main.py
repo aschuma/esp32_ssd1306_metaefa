@@ -103,24 +103,22 @@ try:
 except Exception as e:
     view.show_error(e)
     view.paint(oled)
-    stop()
 else:
-    try:
-        while True:
-            counter = counter + 1
-            try:
-                view.show_progress(True)
-                network_connect(lambda: view.show_message('Network...'))
-                departures = efa.departures()
-                view.show_departures(departures)
-            except Exception as e:
-                print(e)
-                view.show_error(e)
-            finally:
-                view.show_progress(False)
-            time.sleep(75)
-            if counter % 100 == 0:
-                ntp_time_sync(lambda: view.show_message('NTP...'))
-    finally:
-        stop()
+    while True:
+        counter = counter + 1
+        try:
+            view.show_progress(True)
+            network_connect(lambda: view.show_message('Network...'))
+            departures = efa.departures()
+            view.show_departures(departures)
+        except Exception as e:
+            print(e)
+            view.show_error(e)
+        finally:
+            view.show_progress(False)
+        time.sleep(75)
+        if counter % 100 == 0:
+            ntp_time_sync(lambda: view.show_message('NTP...'))
+finally:
+    stop()
 
