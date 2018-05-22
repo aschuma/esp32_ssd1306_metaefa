@@ -20,7 +20,9 @@ class View:
     @staticmethod
     def format_departure(departure):
         now = time.time()
-        return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
+        remaining_minutes = departure.remaining_minutes(now)
+        remaining_minutes_formatted = '{:2d}'.format(remaining_minutes) if remaining_minutes > 0 else '  '
+        return '{:2s} {:2d}min {} {}'.format(departure.number, remaining_minutes_formatted, departure.delay,
                                                  departure.name)
     
     def show_error(self, error):
