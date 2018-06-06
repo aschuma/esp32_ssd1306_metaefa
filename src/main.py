@@ -20,8 +20,9 @@ class View:
     @staticmethod
     def format_departure(departure):
         now = time.time()
-        return '{:2s} {:2d}min {:02d} {}'.format(departure.number, departure.remaining_minutes(now), departure.delay,
-                                                 departure.name)
+        remaining_minutes = departure.remaining_minutes(now)
+        departure_delay_formatted = '{:>3s}'.format('+' + str(departure.delay)) if departure.delay > 0 else '   '
+        return '{:2s} {:2d}min {} {}'.format(departure.number, remaining_minutes, departure_delay_formatted, departure.name)
     
     def show_error(self, error):
         self.error = str(error)
@@ -43,13 +44,13 @@ class View:
     def paint(self, oled):
         oled.fill(0)
         oled.invert(0)
-        oled.text(cet_time.current_time_formatted(), 3, 3)
+        oled.text(cet_time.current_time_formatted(), 0, 0)
         if self.error:
-            oled.text('ERROR', 3, 28)
-            oled.text(self.error, 3, 38)
+            oled.text('ERROR', 0, 26)
+            oled.text(self.error, 0, 38)
         elif self.message:
             oled.fill(0)
-            oled.text(str(self.message), 3, 3)
+            oled.text(str(self.message), 0, 0)
             oled.corner_se_fill_circle(0.50, 1)
             oled.corner_se_fill_circle(0.45, 0)
             oled.corner_se_fill_circle(0.40, 1)
@@ -63,13 +64,13 @@ class View:
         else:
             reachable = self.reachable_departures()
             if len(self.departures) > 0:
-                oled.text(self.format_departure(reachable[0]), 3, 18)
+                oled.text(self.format_departure(reachable[0]), 0, 14)
             if len(self.departures) > 1:
-                oled.text(self.format_departure(reachable[1]), 3, 28)
+                oled.text(self.format_departure(reachable[1]), 0, 26)
             if len(self.departures) > 2:
-                oled.text(self.format_departure(reachable[2]), 3, 38)
+                oled.text(self.format_departure(reachable[2]), 0, 38)
             if len(self.departures) > 3:
-                oled.text(self.format_departure(reachable[3]), 3, 48)
+                oled.text(self.format_departure(reachable[3]), 0, 50)
         if self.processing:
             oled.fill_rect(0, 62, 128, 20, 1)
         oled.show()
