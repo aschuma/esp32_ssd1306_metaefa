@@ -111,15 +111,15 @@ else:
             view.show_progress(True)
             network_connect(lambda: view.show_message('Network...'))
             departures = efa.departures()
+            if counter % 100 == 0:
+                ntp_time_sync(lambda: view.show_message('NTP...'))
             view.show_departures(departures)
         except Exception as e:
             print(e)
             view.show_error(e)
         finally:
             view.show_progress(False)
-        time.sleep(75)
-        if counter % 100 == 0:
-            ntp_time_sync(lambda: view.show_message('NTP...'))
+        time.sleep(90)
 finally:
     stop()
 
