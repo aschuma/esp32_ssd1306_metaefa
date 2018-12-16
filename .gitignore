@@ -3,3 +3,5 @@ py3
 .idea
 .idea/dictionaries
 src/config.py
+src/config_uff.py
+src/config_stm.py
