@@ -22,7 +22,7 @@ class View:
         now = time.time()
         remaining_minutes = departure.remaining_minutes(now)
         departure_delay_formatted = '{:>3s}'.format('+' + str(departure.delay)) if departure.delay > 0 else '   '
-        return '{:3s}{:2d}min {} {}'.format(departure.number, remaining_minutes, departure_delay_formatted, departure.direction)
+        return '{:3s} {:2d}m {} {}'.format(departure.number, remaining_minutes, departure_delay_formatted, departure.direction)
     
     def show_error(self, error):
         self.error = str(error)
