@@ -32,7 +32,7 @@ Links:
 
 # Onboarding 
 
-This is just a brief description what steps have to be performed to enable the development of this application. Please consult google to get in depth details.
+This is just a brief description of what steps have to be performed to enable the development of this application. Please consult Google to get in-depth details.
 
 ## Prepare development infrastructure
 
@@ -71,14 +71,14 @@ This is just a brief description what steps have to be performed to enable the d
    ```
    screen /dev/cu.SLAB_USBtoUART 115200
    ```
-   After that you will be connected to the micropython shell running on the board.
+   After that, you will be connected to the micropython shell running on the board.
    You may leave the shell by typing `Ctrl-A`, `K` and `y.`
 - File explorer
    ```
    rshell -p /dev/cu.SLAB_USBtoUART
    ```         
    The files on the board should be available locally at `/pyboard` on your dev machine.
-   You may copy files to the board by using the `cp` command. More details are availbale here: https://github.com/dhylands/rshell
+   You may copy files to the board by using the `cp` command. More details are available here: https://github.com/dhylands/rshell
    
 Please be aware that you can not use multiple shells simultaneously to the access the board.
 
@@ -86,17 +86,17 @@ Please be aware that you can not use multiple shells simultaneously to the acces
 ## Deployment
 
 - Copy `src/config.py.template` to `src/config.py` and adjust at least the wifi settings.
-- Copy  recursively all files of `src` to the root directory of the board using the `rshell` tool or the `ampy` tool.
+- Copy recursively all files of `src` to the root directory of the board using the `rshell` tool or the `ampy` tool.
    - https://github.com/dhylands/rshell 
    - https://github.com/adafruit/ampy
 - The board should reboot itself. If not unplug the USB cord and plug it back again. 
-- In case of problems connect to the board via  ```
+- In case of problems to connect to the board via  ```
    screen /dev/cu.SLAB_USBtoUART 115200
    ``` press `CTRL-C` and `CTRL-D` to trigger a reboot. Then you should see some log messages. 
    
 # Finally
 
-Be aware that my primary coding language is not python. So please forgive me my bad coding style. I'am still learning python and ESP32 development.
+Be aware that my primary coding language is not python. So please forgive me my bad coding style. I'm still learning python and ESP32 development.
 
 Please feel free to issue a bug report or submit a PR. Any helping hand is welcome.
    
