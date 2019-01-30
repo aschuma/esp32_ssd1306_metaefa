@@ -9,7 +9,7 @@ _|            _|_|  _|    _|        _|    _|      _|          _|      _|    _|
                     _|   
 ```
 
-The aim of this project is to display the departure data of one ore more VVS stations (Haltestellenmonitor) on an ESP32 microcontroller equipped with an Oled SSD1306 display. 
+The aim of this project is to display the departure data of one or more VVS stations (Haltestellenmonitor) on an ESP32 microcontroller equipped with an Oled SSD1306 display. 
 VVS is the Stuttgart public transport system. VVS provides the current timetable of relevant stations by a public available REST endpoint. 
 Micropython is the programming language of choice for this project.
 
