@@ -63,13 +63,13 @@ class View:
             oled.corner_se_fill_circle(0.05, 0)
         else:
             reachable = self.reachable_departures()
-            if len(self.departures) > 0:
+            if len(reachable) > 0:
                 oled.text(self.format_departure(reachable[0]), 0, 14)
-            if len(self.departures) > 1:
+            if len(reachable) > 1:
                 oled.text(self.format_departure(reachable[1]), 0, 26)
-            if len(self.departures) > 2:
+            if len(reachable) > 2:
                 oled.text(self.format_departure(reachable[2]), 0, 38)
-            if len(self.departures) > 3:
+            if len(reachable) > 3:
                 oled.text(self.format_departure(reachable[3]), 0, 50)
         if self.processing:
             oled.fill_rect(0, 62, 128, 20, 1)
