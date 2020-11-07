@@ -21,6 +21,7 @@ The top line contains the current time.
 The other lines hold the tram/bus line number, the departure time, the delay and the short name of the station (RH, SMi). 
 (The relevant tram/bus lines and stations are configurable within a configuration resource)
 
+Please note that the hosted version of the public REST endpoint (metaEFA) used by this project is not available anymore. Please consult https://github.com/opendata-stuttgart/metaEFA to find out, how to host a metaEFA server yourself.   
 
 Links:
 - http://www.vvs.de/
