@@ -27,8 +27,7 @@ Information on hosting a MetaEFA server yourself can be found at https://github.
 Links:
 - http://www.vvs.de/
 - https://github.com/opendata-stuttgart/metaEFA
-- https://efa-api.asw.io/api/v1/
-- https://www.espressif.com/en/products/hardware/esp32/overview
+- https://www.espressif.com/en/products/socs/esp32
 - https://www.aliexpress.com/item/Lolin-ESP32-OLED-wemos-for-Arduino-ESP32-OLED-WiFi-Modules-Bluetooth-Dual-ESP-32-ESP-32S/32807531243.html
 - http://micropython.org/
 
